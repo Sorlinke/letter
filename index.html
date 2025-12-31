@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Countdown</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Cormorant+Garamond:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #D4A574;
+            --secondary: #F5E6D3;
+            --accent: #8B6F47;
+            --dark: #2C2416;
+            --light: #FEF8F3;
+            --rose: #E8B4B8;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, var(--light) 0%, var(--secondary) 100%);
+            overflow: hidden;
+            color: var(--dark);
+        }
+
+        /* Floating decorative elements */
+        .floating-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-photo-frame {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            animation: floatPhoto 8s ease-in-out infinite;
+            opacity: 0.4;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+        }
+
+        .floating-photo-frame:nth-child(1) {
+            top: 8%;
+            left: 5%;
+            animation-duration: 8s;
+            animation-delay: 0s;
+        }
+
+        .floating-photo-frame:nth-child(2) {
+            top: 15%;
+            right: 8%;
+            animation-duration: 10s;
+            animation-delay: 2s;
+        }
+
+        .floating-photo-frame:nth-child(3) {
+            bottom: 15%;
+            left: 10%;
+            animation-duration: 9s;
+            animation-delay: 1s;
+        }
+
+        .floating-photo-frame:nth-child(4) {
+            bottom: 20%;
+            right: 5%;
+            animation-duration: 11s;
+            animation-delay: 3s;
+        }
+
+        .floating-photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid var(--primary);
+            box-shadow: 0 8px 25px rgba(212, 165, 116, 0.3);
+        }
+
+        @keyframes floatPhoto {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-30px) rotate(5deg); 
+            }
+            50% { 
+                transform: translateY(-60px) rotate(0deg); 
+            }
+            75% { 
+                transform: translateY(-30px) rotate(-5deg); 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .floating-photo-frame {
+                width: 120px;
+                height: 120px;
+            }
+
+            .floating-photo-frame:nth-child(3),
+            .floating-photo-frame:nth-child(4) {
+                display: none;
+            }
+        }
+
+        /* Container */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* All pages styling */
+        .page {
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            display: none;
+            transition: opacity 0.8s ease;
+        }
+
+        .page.active {
+            opacity: 1;
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .page-content {
+            background: rgba(255, 248, 243, 0.95);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 4rem 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease;
+        }
+
+        h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        p {
+            font-size: 1.5rem;
+            color: var(--accent);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+        }
+
+        /* Countdown Timer */
+        .countdown-timer {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .time-unit {
+            background: var(--primary);
+            color: var(--light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .time-unit-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0.5rem;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        button {
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(212, 165, 116, 0.3);
+        }
+
+        button:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 165, 116, 0.5);
+        }
+
+        .btn-fine {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+        }
+
+        .btn-not-good {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1, h2 {
+                font-size: 2.5rem;
+            }
+            p {
+                font-size: 1.1rem;
+            }
+            .countdown-timer {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            .time-unit {
+                padding: 1rem;
+                font-size: 1.3rem;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            button {
+                padding: 0.8rem 2rem;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Photos -->
+    <div class="floating-container">
+        <div class="floating-photo-frame">
+            <img src="ss11.jpg" alt="Photo 1">
+        </div>
+        <div class="floating-photo-frame">
+            <img src="ss22.jpg" alt="Photo 2">
+        </div>
+        <div class="floating-photo-frame">
+            <img src="ss33.jpg" alt="Photo 3">
+        </div>
+        <div class="floating-photo-frame">
+            <img src="ss44.jpg" alt="Photo 4">
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Page 1: Countdown -->
+        <div class="page active" id="countdownPage">
+            <div class="page-content">
+                <h1>Menunggu Momen Special</h1>
+                <p>Sabar ya, belum waktunya!</p>
+                <div class="countdown-timer">
+                    <div class="time-unit">
+                        <div id="days">00</div>
+                        <div class="time-unit-label">Hari</div>
+                    </div>
+                    <div class="time-unit">
+                        <div id="hours">00</div>
+                        <div class="time-unit-label">Jam</div>
+                    </div>
+                    <div class="time-unit">
+                        <div id="minutes">00</div>
+                        <div class="time-unit-label">Menit</div>
+                    </div>
+                    <div class="time-unit">
+                        <div id="seconds">00</div>
+                        <div class="time-unit-label">Detik</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 2: Letter Announcement -->
+        <div class="page" id="letterPage">
+            <div class="page-content">
+                <h2>I Have Something For You</h2>
+         <button onclick="goToGDrive()">Mau Lihat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Countdown Timer
+        const targetDate = new Date('2024-12-31T19:00:00').getTime();
+
+        let countdownFinished = false;
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0 && !countdownFinished) {
+                countdownFinished = true;
+                showPage('letterPage');
+                return;
+            }
+
+            if (distance >= 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function goToGDrive() {
+            // Ganti URL ini dengan link Google Drive kamu
+            window.location.href = 'https://drive.google.com/file/d/12WIYeRIkomtBHtCAS9vJvIe7fUGIvBQ9/view?usp=drive_link';
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
